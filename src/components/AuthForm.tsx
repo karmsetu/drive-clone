@@ -17,6 +17,7 @@ import { Input } from './ui/input';
 import Image from 'next/image';
 import Link from 'next/link';
 import { createAccount } from '@/lib/actions/user.actions';
+import OTPModal from './OTPModal';
 
 type Type = 'sign-in' | 'sign-up';
 
@@ -36,7 +37,7 @@ const AuthFormSchema = (formType: Type) => {
 const AuthForm = ({ type }: AuthFormPropsType) => {
     const [isLoading, setIsLoading] = React.useState(false);
     const [errorMessage, setErrorMessage] = React.useState('');
-    const [accountId, setAccountId] = React.useState(null);
+    const [accountId, setAccountId] = React.useState<string | null>(null);
     // 1. Define your form.
     const formSchema = AuthFormSchema(type);
     const form = useForm<z.infer<typeof formSchema>>({
@@ -152,6 +153,16 @@ const AuthForm = ({ type }: AuthFormPropsType) => {
                     </div>
                 </form>
             </Form>
+
+            {/* OTP Modal */}
+            {accountId && (
+                <>
+                    <OTPModal
+                        email={form.getValues('email')}
+                        accountId={accountId}
+                    />
+                </>
+            )}
         </>
     );
 };
