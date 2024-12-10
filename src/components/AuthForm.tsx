@@ -16,7 +16,7 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import Image from 'next/image';
 import Link from 'next/link';
-import { createAccount } from '@/lib/actions/user.actions';
+import { createAccount, signInUser } from '@/lib/actions/user.actions';
 import OTPModal from './OTPModal';
 
 type Type = 'sign-in' | 'sign-up';
@@ -55,10 +55,13 @@ const AuthForm = ({ type }: AuthFormPropsType) => {
 
         try {
             const { email, fullName } = values;
-            const user = await createAccount({
-                fullName: fullName || '',
-                email,
-            });
+            const user =
+                type === 'sign-up'
+                    ? await createAccount({
+                          fullName: fullName || '',
+                          email,
+                      })
+                    : await signInUser({ email: values.email });
             setAccountId(user.accountId);
             console.log(values);
         } catch (error) {
@@ -98,28 +101,28 @@ const AuthForm = ({ type }: AuthFormPropsType) => {
                                     </FormItem>
                                 )}
                             />
-                            <FormField
-                                control={form.control}
-                                name="email"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <div className="shad-form-item">
-                                            <FormLabel className="shad-form-label">
-                                                email
-                                            </FormLabel>
-                                            <Input
-                                                placeholder="enter your email"
-                                                {...field}
-                                                className="shad-input"
-                                            />
-                                        </div>
-                                        <FormControl></FormControl>
-                                        <FormMessage className="shad-form-message" />
-                                    </FormItem>
-                                )}
-                            />
                         </>
                     )}
+                    <FormField
+                        control={form.control}
+                        name="email"
+                        render={({ field }) => (
+                            <FormItem>
+                                <div className="shad-form-item">
+                                    <FormLabel className="shad-form-label">
+                                        email
+                                    </FormLabel>
+                                    <Input
+                                        placeholder="enter your email"
+                                        {...field}
+                                        className="shad-input"
+                                    />
+                                </div>
+                                <FormControl></FormControl>
+                                <FormMessage className="shad-form-message" />
+                            </FormItem>
+                        )}
+                    />
                     <Button
                         type="submit"
                         className="form-submit-button"
