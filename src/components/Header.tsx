@@ -4,12 +4,18 @@ import FileUploader from './FileUploader';
 import { Button } from './ui/button';
 import { signOutUser } from '@/lib/actions/user.actions';
 
-const Header = () => {
+const Header = ({
+    accountId,
+    userId,
+}: {
+    accountId: string;
+    userId: string;
+}) => {
     return (
         <header className="header">
             <Search />
             <div className="header-wrapper">
-                <FileUploader />
+                <FileUploader accountId={accountId} ownerId={userId} />
                 <form
                     action={async () => {
                         'use server';

@@ -20,9 +20,11 @@ import { signOutUser } from '@/lib/actions/user.actions';
 type MobileProps = SidebarPropsType & {
     ownerId: string;
     accountId: string;
+    $id: string;
 };
 const MobileNavigation = ({
-    ownerId,
+    $id: ownerId,
+    accountId,
     fullName,
     avatar,
     email,
@@ -105,7 +107,7 @@ const MobileNavigation = ({
 
                     <Separator className="my-5 bg-light-200/20" />
                     <div className="flex flex-col justify-between gap-5 pb-5">
-                        <FileUploader />
+                        <FileUploader accountId={accountId} ownerId={ownerId} />
                         <Button
                             type="submit"
                             className="mobile-sign-out-button"
