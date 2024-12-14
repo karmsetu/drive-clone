@@ -24,8 +24,11 @@ import { useState } from 'react';
 import { AlertDialogHeader } from './ui/alert-dialog';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
+import { renameFile } from '@/lib/actions/file.actions';
+import { usePathname } from 'next/navigation';
 
 const ActionDropDown = ({ file }: { file: Models.Document }) => {
+    const path = usePathname();
     const [isModelOpen, setIsModelOpen] = useState(false);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [action, setAction] = useState<ActionType | null>(null);
@@ -40,7 +43,28 @@ const ActionDropDown = ({ file }: { file: Models.Document }) => {
         setName(file.name);
     };
 
-    const handleAction = async () => {};
+    const handleAction = async () => {
+        if (!action) return;
+
+        setIsLoading(true);
+
+        let success = false;
+
+        const actions = {
+            rename: () =>
+                renameFile({
+                    fileId: file.$id,
+                    name,
+                    extension: file.extension,
+                    path,
+                }),
+            share: () => console.log('share'),
+            delete: () => console.log('share'),
+        };
+
+        success = await actions[action.value as keyof typeof actions]();
+        if (success) closeAllModels();
+    };
 
     const renderDialogContent = () => {
         if (!action) return null;
