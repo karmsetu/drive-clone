@@ -54,10 +54,12 @@ export const ShareInput = ({
     file,
     onInputChange,
     onRemove,
+    isOwner,
 }: {
     file: Models.Document;
     onInputChange: React.Dispatch<React.SetStateAction<string[]>>;
     onRemove: (email: string) => void;
+    isOwner: boolean;
 }) => {
     return (
         <>
@@ -91,18 +93,21 @@ export const ShareInput = ({
                             >
                                 <p className="subtitle-2">{email}</p>
 
-                                <Button
-                                    onClick={() => onRemove(email)}
-                                    className="share-remove-user"
-                                >
-                                    <Image
-                                        src={'/assets/icons/remove.svg'}
-                                        alt="remove"
-                                        width={24}
-                                        height={24}
-                                        className="remove-icon"
-                                    />
-                                </Button>
+                                {/* check if the current user is the owner of the image */}
+                                {isOwner && (
+                                    <Button
+                                        onClick={() => onRemove(email)}
+                                        className="share-remove-user"
+                                    >
+                                        <Image
+                                            src={'/assets/icons/remove.svg'}
+                                            alt="remove"
+                                            width={24}
+                                            height={24}
+                                            className="remove-icon"
+                                        />
+                                    </Button>
+                                )}
                             </li>
                         ))}
                     </ul>

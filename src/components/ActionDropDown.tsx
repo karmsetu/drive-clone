@@ -20,7 +20,7 @@ import { constructDownloadUrl } from '@/lib/utils';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Models } from 'node-appwrite';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { AlertDialogHeader } from './ui/alert-dialog';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
@@ -28,6 +28,7 @@ import { renameFile, updateFileUsers } from '@/lib/actions/file.actions';
 import { usePathname } from 'next/navigation';
 import { FileDetails } from './ActionsModelContent';
 import { ShareInput } from './ActionsModelContent';
+import { getCurrentUser } from '@/lib/actions/user.actions';
 
 const ActionDropDown = ({ file }: { file: Models.Document }) => {
     const path = usePathname();
@@ -37,6 +38,16 @@ const ActionDropDown = ({ file }: { file: Models.Document }) => {
     const [name, setName] = useState(file.name);
     const [isLoading, setIsLoading] = useState(false);
     const [emails, setEmails] = useState<string[]>([]);
+    const [isOwner, setIsOwner] = useState(false);
+
+    useEffect(() => {
+        // Check ownership on component mount
+        const fetchOwnershipStatus = async () => {
+            const user = await getCurrentUser();
+            setIsOwner(user.$id === file.owner.$id);
+        };
+        fetchOwnershipStatus();
+    }, [file.owner.$id]);
 
     const closeAllModels = () => {
         setIsModelOpen(false);
@@ -109,6 +120,7 @@ const ActionDropDown = ({ file }: { file: Models.Document }) => {
                                 file={file}
                                 onInputChange={setEmails}
                                 onRemove={handleRemoveUser}
+                                isOwner={isOwner}
                             />
                         )}
                     </DialogHeader>
