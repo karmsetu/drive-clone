@@ -24,7 +24,11 @@ import { useEffect, useState } from 'react';
 import { AlertDialogHeader } from './ui/alert-dialog';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
-import { renameFile, updateFileUsers } from '@/lib/actions/file.actions';
+import {
+    deleteFile,
+    renameFile,
+    updateFileUsers,
+} from '@/lib/actions/file.actions';
 import { usePathname } from 'next/navigation';
 import { FileDetails } from './ActionsModelContent';
 import { ShareInput } from './ActionsModelContent';
@@ -73,7 +77,12 @@ const ActionDropDown = ({ file }: { file: Models.Document }) => {
                     path,
                 }),
             share: () => updateFileUsers({ fileId: file.$id, emails, path }),
-            delete: () => console.log('share'),
+            delete: () =>
+                deleteFile({
+                    fileId: file.$id,
+                    bucketFileId: file.bucketFileId,
+                    path,
+                }),
         };
 
         success = await actions[action.value as keyof typeof actions]();
@@ -122,6 +131,15 @@ const ActionDropDown = ({ file }: { file: Models.Document }) => {
                                 onRemove={handleRemoveUser}
                                 isOwner={isOwner}
                             />
+                        )}
+
+                        {value === 'delete' && (
+                            <p className="deleted-confirmation">
+                                Are you sure you want to delete
+                                <span className="delete-file-name">
+                                    {file.name}
+                                </span>
+                            </p>
                         )}
                     </DialogHeader>
                     {['rename', 'delete', 'share'].includes(value) && (

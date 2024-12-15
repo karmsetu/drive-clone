@@ -145,3 +145,28 @@ export const updateFileUsers = async ({
         handleError(error, 'failed to rename field');
     }
 };
+
+export const deleteFile = async ({
+    fileId,
+    bucketFileId,
+    path,
+}: DeleteFileProps) => {
+    const { databases, storage } = await createAdminClient();
+
+    try {
+        const deletedFile = await databases.deleteDocument(
+            appwriteConfig.databaseId,
+            appwriteConfig.filesCollectionId,
+            fileId
+        );
+
+        if (deletedFile) {
+            await storage.deleteFile(appwriteConfig.bucketId, bucketFileId);
+        }
+
+        revalidatePath(path);
+        return parseStringify({ staus: 'success' });
+    } catch (error) {
+        handleError(error, 'failed to rename field');
+    }
+};
