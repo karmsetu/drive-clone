@@ -40,9 +40,9 @@ const Search = () => {
                 types: [],
             });
             setResults(files.documents);
+            setOpen(true);
         };
         fetchFiles();
-        setOpen(true);
     }, [debouncedQuery]);
 
     const handleClickItem = (file: Models.Document) => {
