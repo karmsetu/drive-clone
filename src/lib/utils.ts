@@ -236,3 +236,9 @@ export const getFileTypesParams = (type: string) => {
             return ['document'];
     }
 };
+
+export const calculateAngle = (value: number) => {
+    const totalSizeInBytes = 2 * 1024 * 1024 * 1024; // 2GB in bytes
+    const percentage = (value / totalSizeInBytes) * 180;
+    return Number(percentage.toFixed(2));
+};
